@@ -112,17 +112,22 @@ if __name__ == "__main__":
 				wiki_summary = get_summary(df.loc[x,'label'])
 				if not wiki_summary == 0:
 					df.loc[x,'definition'] = wiki_summary	 				#Assigning value of wiki_summary to definition column
-					df.loc[x,'definition status'] = 1	 				#Update the definition status to 1 after fetching definition
+					df.loc[x,'definition status'] = 3	 				#Update the definition status to 1 after fetching definition
 					wiki_url = get_summary_url(df.loc[x,'label'])
 					df.loc[x,'definition source'] = wiki_url
+				else:
+					df.loc[x,'definition status'] = 1
 
 			if (df.loc[x,'image status']== 0) or (pd.isna(df.loc[x,'image status'])):  		#Image status is zero or nan/empty
 				wiki_image = get_wiki_image_orignal(search_term_orignal = df.loc[x,'label']) 	#store the value of function (returning list) in wiki image, only when image status is 0 or nan.
 				if not len(wiki_image) ==0:
 					df.loc[x,'image url'] = wiki_image[0]   				#Store the image url in 'image url' column
-					df.loc[x,'image status'] = 1  						#Update the image status to 1
+					df.loc[x,'image status'] = 3  						#Update the image status to 1
 					df.loc[x,'license'] = wiki_image[1] 					#Store the value of license in 'license' Column
 					df.loc[x,'image provider'] = wiki_image[2] 				#Store the value of image provider in 'image provider' Column
+				else:
+					df.loc[x,'image status'] = 1 
+						
 
 	w_filenameTSV = (outputfile)
 	with open(w_filenameTSV,'w',encoding="utf-8") as write_tsv:
