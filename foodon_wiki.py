@@ -18,6 +18,7 @@ import os
 import wikipediaapi
 import pandas as pd
 import argparse
+from time import process_time
 
 parser = argparse.ArgumentParser()
 required_name = parser.add_argument_group('required arguments')
@@ -94,7 +95,7 @@ def get_wiki_image_orignal(search_term_orignal):
         json_data = json.loads(response.text)
         img_link = list(json_data['query']['pages'].values())[0]['original'][
                 'source']
-        print(img_link)
+
         if img_link:
             img_license, img_provider = extract_image_license(
                 image_name=os.path.basename(img_link))
@@ -107,7 +108,7 @@ def get_wiki_image_orignal(search_term_orignal):
         # A list of image data which have image link on index 0,
         # image license on 1st index and image provider on 2nd index.
         img_data = [img_link, img_license, img_provider]
-        print(img_data)
+
         return img_data
     except:
         return []
@@ -128,6 +129,7 @@ def extract_image_license(image_name):
         image_info = result['query']['pages'][page_id]['imageinfo']
         return (image_info[0]['extmetadata']["UsageTerms"]['value']), (
             image_info[0]["user"])
+
     except:
         return 0
 
@@ -165,6 +167,9 @@ if __name__ == "__main__":
                     df.loc[x, 'image url'] = wiki_image[0]
                     # Updating image status
                     df.loc[x, 'image status'] = 3
+                    # Storing the value of img_license in
+                    # 'license' Column
+                    df.loc[x, 'license'] = wiki_image[1]
                     # Storing the value of image provider in
                     # 'image provider' Column
                     df.loc[x, 'image provider'] = wiki_image[2]
@@ -177,3 +182,14 @@ if __name__ == "__main__":
             df.to_csv(sep='\t', line_terminator='\n', index=False))
 
     print("\n\n Output Written in " + str(file_output) + "\n\n")
+
+# Get the current processor
+# time in seconds
+time_stop = process_time()
+
+# print the current
+# processor time
+print("Elapsed time during the whole program in seconds:",
+                                         time_stop)
+print("Current processor time (in minutes):", (time_stop)/60)
+
